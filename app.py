@@ -31,7 +31,7 @@ def convert_single_video(video_id):
         text = " ".join([line['text'] for line in transcript])
         response = openai.Completion.create(
             engine="text-davinci-003",
-            prompt="Transorm this into an SEO blog post also make it intuitive inspiring and captivating also make it a little bit on the longer side while maintaining SEO friendliness at the highest level with a title"+ text,
+            prompt=f"Transorm this into an SEO blog post also make it intuitive inspiring and captivating also make it a little bit on the longer side while maintaining SEO friendliness at the highest level with a title{text}",
             temperature=0.9,
             max_tokens=500,
             top_p=1.0,
@@ -71,15 +71,14 @@ def main():
             st.subheader('Combine Transcripts')
             video_id1 = st.text_input('YouTube Video ID 1')
             video_id2 = st.text_input('YouTube Video ID 2')
-            
+
             if st.button('Combine'):
                 video_ids = [video_id1, video_id2]
-                combined_text = combine_transcripts(video_ids)
-                if combined_text:
+                if combined_text := combine_transcripts(video_ids):
                     try:
                         response = openai.Completion.create(
                             engine="text-davinci-003",
-                            prompt="Transorm this into an SEO blog post also make it intuitive inspiring and captivating also make it a little bit on the shorter side so that it does not break off while maintaining SEO friendliness at the highest level with a title"+combined_text,
+                            prompt=f"Transorm this into an SEO blog post also make it intuitive inspiring and captivating also make it a little bit on the shorter side so that it does not break off while maintaining SEO friendliness at the highest level with a title{combined_text}",
                             temperature=0.9,
                             max_tokens=500,
                             top_p=1.0,
@@ -95,13 +94,12 @@ def main():
                         st.error(str(e))
                 else:
                     st.warning("No transcripts found for the provided Video IDs")
-                
+
         elif option == 'Convert Single Video':
             st.subheader('Convert Single Video')
             video_id = st.text_input('YouTube Video ID')
             if st.button('Convert'):
-                blog_post = convert_single_video(video_id)
-                if blog_post:
+                if blog_post := convert_single_video(video_id):
                     st.markdown('## Converted Blog Post:')
                     st.write(blog_post)
                 else:
@@ -109,7 +107,7 @@ def main():
 
     elif choice == 'About':
                 about_us()
-    
+
     elif choice == 'Our Solution':
         our_solution()
     elif choice == 'Why choose us':
